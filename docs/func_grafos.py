@@ -18,6 +18,16 @@ class TGrafoND:
     def existe_vertice(self, v):
         return 0 <= v < self.n
 
+    def inserir_vertice_com_nome(self, nome_predio):
+        n_vertice = self.n
+        self.n += 1
+        self.adj.append([0] * self.n)
+        for i in range(self.n):
+            self.adj[i].append(0)
+        self.predios[n_vertice] = nome_predio
+        self.operacoes.append(f"Vértice inserido: {n_vertice} ({nome_predio})")
+        print(f"Vértice {n_vertice} com nome '{nome_predio}' inserido com sucesso.")
+
     def insereA(self, v, w, peso):
         if not self.existe_vertice(v) or not self.existe_vertice(w):
             print(f"Erro: O vértice {v} ou {w} não existe.")
@@ -28,16 +38,6 @@ class TGrafoND:
                 self.adj[w][v] = peso
             self.num_arestas += 1
             self.operacoes.append(f"Aresta inserida: {v} - {w} com peso {peso}")
-
-    def inserir_vertice_com_nome(self, nome_predio):
-        n_vertice = self.n
-        self.n += 1
-        self.adj.append([0] * self.n)
-        for i in range(self.n):
-            self.adj[i].append(0)
-        self.predios[n_vertice] = nome_predio
-        self.operacoes.append(f"Vértice inserido: {n_vertice} ({nome_predio})")
-        print(f"Vértice {n_vertice} com nome '{nome_predio}' inserido com sucesso.")
 
     def removeVertice(self, v):
         if not self.existe_vertice(v):
