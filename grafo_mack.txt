@@ -63,7 +63,7 @@
 60 "Prédio 745 Externo - Empresa Júnior Engenharia Mackenzie"
 61 "Prédio 847 Externo - Pós-Graduação Lato Sensu"
 62 "Prédio 993 Externo - Juizado Especial Cível"
-??? -> ligações
-
+1
+0 1 1.2
 
 
