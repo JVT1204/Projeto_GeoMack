@@ -63,7 +63,32 @@
 60 "Prédio 745 Externo - Empresa Júnior Engenharia Mackenzie"
 61 "Prédio 847 Externo - Pós-Graduação Lato Sensu"
 62 "Prédio 993 Externo - Juizado Especial Cível"
-1
-0 1 1.2
 
-
+0 6
+0 7
+0 62
+0 52
+1 2
+1 24
+1 42
+1 5
+1 56
+2 19
+2 18
+2 4
+3 12
+3 27
+3 54
+3 57
+3 58
+4 15
+4 8
+5 6
+6 45
+6 46
+6 55
+7 61
+7 62
+7 40
+7 41
+7 53
