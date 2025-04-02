@@ -63,7 +63,7 @@
 60 "Prédio 745 Externo - Empresa Júnior Engenharia Mackenzie"
 61 "Prédio 847 Externo - Pós-Graduação Lato Sensu"
 62 "Prédio 993 Externo - Juizado Especial Cível"
-
+98
 0 6 87
 0 7 247
 0 62 221
