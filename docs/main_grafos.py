@@ -23,7 +23,8 @@ def menu():
         print("6. Remover aresta")
         print("7. Mostrar conteúdo do grafo")
         print("8. Verificar grau de conexidade")
-        print("9. Sair")
+        print("9. Calcular menor caminho (Dijkstra)")
+        print("10. Sair")
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
@@ -93,8 +94,63 @@ def menu():
                 print(f"Grau de conexidade do grafo: {grafo.categoriaConexidade()}")
             else:
                 print("Grafo não carregado.")
-
+                
         elif opcao == "9":
+            if grafo:
+                # Mostrar os vértices disponíveis e seus nomes
+                print("\nVértices disponíveis:")
+                print("ID | NOME DO PRÉDIO")
+                print("-" * 40)
+                for i in range(grafo.n):
+                    nome = grafo.get_nome_predio(i)
+                    print(f"{i:2} | {nome}")
+                print("-" * 40)
+                
+                try:
+                    origem = int(input("\nDigite o vértice de origem: "))
+                    if grafo.existe_vertice(origem):
+                        nome_origem = grafo.get_nome_predio(origem)
+                        print(f"Prédio de origem selecionado: {nome_origem}")
+                    else:
+                        print(f"Erro: Vértice {origem} não existe.")
+                        continue
+                        
+                    destino = int(input("Digite o vértice de destino: "))
+                    if grafo.existe_vertice(destino):
+                        nome_destino = grafo.get_nome_predio(destino)
+                        print(f"Prédio de destino selecionado: {nome_destino}")
+                    else:
+                        print(f"Erro: Vértice {destino} não existe.")
+                        continue
+                    
+                    if not grafo.existe_vertice(origem) or not grafo.existe_vertice(destino):
+                        print(f"Erro: Vértice de origem {origem} ou destino {destino} não existe.")
+                    else:
+                        print(f"\nCalculando menor caminho de {origem} ({nome_origem}) para {destino} ({nome_destino})...")
+                        caminho, distancia = grafo.dijkstra(origem, destino)
+                        
+                        if distancia == float('inf') or caminho is None or len(caminho) == 0:
+                            print(f"Não existe caminho entre os vértices {origem} ({nome_origem}) e {destino} ({nome_destino}).")
+                        else:
+                            print(f"\nMenor caminho de {origem} ({nome_origem}) a {destino} ({nome_destino}):")
+                            print(f"Distância total: {distancia:.2f}")
+                            
+                            print("\nCaminho completo:")
+                            for i in range(len(caminho)):
+                                v = caminho[i]
+                                nome = grafo.get_nome_predio(v)
+                                if i < len(caminho) - 1:
+                                    proxV = caminho[i+1]
+                                    peso = grafo.adj[v][proxV]
+                                    print(f"  {v:2} ({nome}) --[{peso:.2f}]--> ", end="")
+                                else:
+                                    print(f"{v:2} ({nome})")
+                except ValueError:
+                    print("Por favor, insira números válidos para os vértices.")
+            else:
+                print("Grafo não carregado.")
+
+        elif opcao == "10":
             print("Encerrando o programa.")
             break
 

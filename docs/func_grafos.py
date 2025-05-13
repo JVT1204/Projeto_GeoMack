@@ -6,6 +6,8 @@
 
 # Arquivo de funções: contém todas as funções necessárias para o funcionamento do projeto
 
+import sys
+
 class TGrafoND:
     def __init__(self, n, tipo_grafo):
         self.n = n  # Número de vértices
@@ -17,6 +19,14 @@ class TGrafoND:
 
     def existe_vertice(self, v):
         return 0 <= v < self.n
+
+    def get_nome_predio(self, v):
+        """Retorna o nome do prédio, garantindo que todos os vértices tenham nomes reais."""
+        if v not in self.predios:
+            nome = f"Prédio {v}"
+            self.predios[v] = nome
+            return nome
+        return self.predios[v]
 
     def inserir_vertice_com_nome(self, nome_predio):
         n_vertice = self.n
@@ -80,26 +90,55 @@ class TGrafoND:
                 self.n = int(linhas[1].strip())
                 self.adj = [[0 for _ in range(self.n)] for _ in range(self.n)]
                 self.predios = {}
+                
+                # Tentar extrair nomes dos prédios, se disponíveis no arquivo
+                for i in range(2, min(2 + self.n, len(linhas))):
+                    linha = linhas[i].strip()
+                    if ":" in linha:  # Formato esperado: "índice: nome do prédio"
+                        partes = linha.split(":", 1)  # Divide apenas no primeiro ":"
+                        try:
+                            idx = int(partes[0].strip())
+                            if 0 <= idx < self.n:
+                                self.predios[idx] = partes[1].strip()
+                        except (ValueError, IndexError):
+                            pass  # Ignora linhas mal formatadas
+                
                 num_arestas_esperadas = int(linhas[2 + self.n].strip())
 
                 arestas_lidas = 0
                 for linha in linhas:
                     valores = linha.strip().split()
                     if len(valores) == 3:
-                        v, w, peso = map(float, valores)
-                        self.adj[int(v)][int(w)] = peso
-                        if self.tipo_grafo == 2 and self.adj[int(w)][int(v)] == 0:
-                            self.adj[int(w)][int(v)] = peso
-                        arestas_lidas += 1
+                        try:
+                            v, w, peso = map(float, valores)
+                            self.adj[int(v)][int(w)] = peso
+                            if self.tipo_grafo == 2 and self.adj[int(w)][int(v)] == 0:
+                                self.adj[int(w)][int(v)] = peso
+                            arestas_lidas += 1
+                        except (ValueError, IndexError):
+                            pass  # Ignora linhas mal formatadas
 
                 self.num_arestas = arestas_lidas
+                
+                # Garantir que todos os vértices tenham nomes
+                for i in range(self.n):
+                    if i not in self.predios:
+                        self.predios[i] = f"Prédio {i}"
 
                 if self.num_arestas != num_arestas_esperadas:
                     print(f"Alerta: Número de arestas lido ({self.num_arestas}) diferente do esperado ({num_arestas_esperadas})")
                 else:
                     print(f"Arquivo carregado corretamente com {self.num_arestas} arestas.")
+                    
+                print(f"Total de prédios carregados: {self.n}")
+                print("Nomes dos prédios:")
+                for id_vertice, nome in sorted(self.predios.items()):
+                    print(f"  {id_vertice}: {nome}")
+                    
         except FileNotFoundError:
             print(f"Erro: Arquivo '{arquivo}' não encontrado.")
+        except Exception as e:
+            print(f"Erro ao processar arquivo: {str(e)}")
 
     def gravarNoArquivo(self, arquivo):
         with open(arquivo, 'w') as f:
@@ -133,3 +172,56 @@ class TGrafoND:
 
         dfs(0)
         return "Conexo" if all(visitado) else "Desconexo"
+    
+    # Implementação do Algoritmo de Dijkstra para encontrar o caminho mais curto
+    def dijkstra(self, origem, destino):
+        if not self.existe_vertice(origem) or not self.existe_vertice(destino):
+            print(f"Erro: O vértice {origem} ou {destino} não existe.")
+            return None, float('inf')
+
+        # Garantir que os vértices tenham nomes
+        nome_origem = self.get_nome_predio(origem)
+        nome_destino = self.get_nome_predio(destino)
+
+        dist = [sys.maxsize] * self.n  # Inicializa distâncias como infinito
+        dist[origem] = 0
+        visitados = [False] * self.n
+        antecessor = [None] * self.n
+
+        for _ in range(self.n):
+            u = self.min_dist(dist, visitados)
+            visitados[u] = True
+
+            for v in range(self.n):
+                if self.adj[u][v] > 0 and not visitados[v] and dist[u] + self.adj[u][v] < dist[v]:
+                    dist[v] = dist[u] + self.adj[u][v]
+                    antecessor[v] = u
+
+        # Reconstrução do caminho (usando IDs dos vértices)
+        caminho_ids = []
+        atual = destino
+        while atual is not None:
+            caminho_ids.insert(0, atual)
+            atual = antecessor[atual]
+        
+        # Verificar se o caminho existe
+        if not caminho_ids or caminho_ids[0] != origem:
+            return [], float('inf')
+            
+        # Registrar operação no histórico
+        nomes_caminho = [f"{v} ({self.get_nome_predio(v)})" for v in caminho_ids]
+        operacao = f"Dijkstra: Menor caminho de {origem} ({nome_origem}) a {destino} ({nome_destino}): {' -> '.join(nomes_caminho)} (Distância: {dist[destino]:.2f})"
+        self.operacoes.append(operacao)
+            
+        return caminho_ids, dist[destino]
+
+    def min_dist(self, dist, visitados):
+        min_val = sys.maxsize
+        min_index = -1
+
+        for v in range(self.n):
+            if dist[v] < min_val and not visitados[v]:
+                min_val = dist[v]
+                min_index = v
+
+        return min_index
