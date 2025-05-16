@@ -94,12 +94,22 @@ class TGrafoND:
                 # Tentar extrair nomes dos prédios, se disponíveis no arquivo
                 for i in range(2, min(2 + self.n, len(linhas))):
                     linha = linhas[i].strip()
-                    if ":" in linha:  # Formato esperado: "índice: nome do prédio"
+                    if ":" in linha:
                         partes = linha.split(":", 1)  # Divide apenas no primeiro ":"
                         try:
                             idx = int(partes[0].strip())
                             if 0 <= idx < self.n:
-                                self.predios[idx] = partes[1].strip()
+                                nome = partes[1].strip().strip('"')
+                                self.predios[idx] = nome
+                        except (ValueError, IndexError):
+                            pass  # Ignora linhas mal formatadas
+                    elif '"' in linha:
+                        partes = linha.split(' ', 1)
+                        try:
+                            idx = int(partes[0].strip())
+                            if 0 <= idx < self.n:
+                                nome = partes[1].strip().strip('"')
+                                self.predios[idx] = nome
                         except (ValueError, IndexError):
                             pass  # Ignora linhas mal formatadas
                 

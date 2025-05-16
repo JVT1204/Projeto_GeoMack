@@ -100,11 +100,13 @@ def menu():
                 # Mostrar os vértices disponíveis e seus nomes
                 print("\nVértices disponíveis:")
                 print("ID | NOME DO PRÉDIO")
-                print("-" * 40)
+                print("-" * 80)
                 for i in range(grafo.n):
                     nome = grafo.get_nome_predio(i)
+                    # Remove as aspas extras se existirem
+                    nome = nome.strip('"')
                     print(f"{i:2} | {nome}")
-                print("-" * 40)
+                print("-" * 80)
                 
                 try:
                     origem = int(input("\nDigite o vértice de origem: "))
