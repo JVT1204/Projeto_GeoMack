@@ -7,6 +7,7 @@
 # Arquivo de funções: contém todas as funções necessárias para o funcionamento do projeto
 
 import sys
+from collections import deque
 
 class TGrafoND:
     def __init__(self, n, tipo_grafo):
@@ -235,3 +236,60 @@ class TGrafoND:
                 min_index = v
 
         return min_index
+    
+    def grau_vertices(self):
+        graus = {v: 0 for v in range(self.n)}
+        for v in range(self.n):
+            for w in range(self.n):
+                if self.adj[v][w] is not None:
+                    graus[v] += 1
+        return graus
+
+    def is_euleriano(self):
+        graus = self.grau_vertices()
+        return all(grau % 2 == 0 for grau in graus.values())
+
+    def is_hamiltoniano(self):
+        graus = self.grau_vertices()
+        return all(grau >= self.n / 2 for grau in graus.values())
+    
+    def depthfs(self, origem):
+        """Retorna a ordem de visita dos prédios a partir do vértice de origem usando DFS iterativo."""
+        if not self.existe_vertice(origem):
+            return []
+
+        visitados = [False] * self.n
+        ordem_visita = []
+        pilha = [origem]
+
+        while pilha:
+            v = pilha.pop()
+            if not visitados[v]:
+                visitados[v] = True
+                ordem_visita.append(v)
+                # Adiciona os vizinhos em ordem reversa para manter a ordem de visita "natural"
+                for w in range(self.n - 1, -1, -1):
+                    if self.adj[v][w] > 0 and not visitados[w]:
+                        pilha.append(w)
+        return ordem_visita
+
+    def Breadthfs(self, origem):
+        """Retorna a ordem de visita dos prédios a partir do vértice de origem usando BFS."""
+        if not self.existe_vertice(origem):
+            return []  # Retorna lista vazia se o vértice não existe
+
+        visitados = [False] * self.n
+        fila = []
+        ordem_visita = []
+
+        fila.append(origem)
+        visitados[origem] = True
+
+        while fila:
+            v = fila.pop(0)
+            ordem_visita.append(v)
+            for w in range(self.n):
+                if self.adj[v][w] > 0 and not visitados[w]:
+                    fila.append(w)
+                    visitados[w] = True
+        return ordem_visita

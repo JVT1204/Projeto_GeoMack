@@ -24,7 +24,8 @@ def menu():
         print("7. Mostrar conteúdo do grafo")
         print("8. Verificar grau de conexidade")
         print("9. Calcular menor caminho (Dijkstra)")
-        print("10. Sair")
+        print("10. Analisar características do grafo")
+        print("11. Sair")
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
@@ -153,6 +154,70 @@ def menu():
                 print("Grafo não carregado.")
 
         elif opcao == "10":
+            if grafo:
+                while True:
+                    print("\n--- Análise de Características do Campus ---")
+                    print("1. Verificar grau dos prédios")
+                    print("2. Verificar se o campus possui um ciclo Euleriano")
+                    print("3. Verificar se o campus possui um ciclo Hamiltoniano")
+                    print("4. Explorar o campus por busca em largura (BFS)")
+                    print("5. Explorar o campus por busca em profundidade (DFS)")
+                    print("6. Voltar ao menu principal")
+                    sub_opcao = input("Escolha uma opção: ")
+
+                    if sub_opcao == "1":
+                        graus = grafo.grau_vertices()
+                        print("Grau de cada prédio (número de conexões diretas):")
+                        for vertice, grau in graus.items():
+                            nome_predio = grafo.get_nome_predio(vertice)
+                            print(f"Prédio {vertice} ({nome_predio}): grau {grau}")
+
+                    elif sub_opcao == "2":
+                        euleriano = grafo.is_euleriano()
+                        print(f"O campus possui um ciclo Euleriano: {'Sim' if euleriano else 'Não'}")
+
+                    elif sub_opcao == "3":
+                        hamiltoniano = grafo.is_hamiltoniano()
+                        print(f"O campus possui um ciclo Hamiltoniano: {'Sim' if hamiltoniano else 'Não'}")
+
+                    elif sub_opcao == "4":
+                        try:
+                            origem = int(input("Digite o número do prédio de origem para a busca em largura (BFS): "))
+                            if grafo.existe_vertice(origem):
+                                resultado_bfs = grafo.Breadthfs(origem)
+                                print("Ordem de visita aos prédios (BFS):")
+                                for v in resultado_bfs:
+                                    nome = grafo.get_nome_predio(v)
+                                    print(f"{v} ({nome})")
+                            else:
+                                print("Prédio de origem não existe.")
+                        except ValueError:
+                            print("Entrada inválida. Digite um número de prédio válido.")
+
+                    elif sub_opcao == "5":
+                        try:
+                            origem = int(input("Digite o número do prédio de origem para a busca em profundidade (DFS): "))
+                            if grafo.existe_vertice(origem):
+                                resultado_dfs = grafo.depthfs(origem)
+                                print("Ordem de visita aos prédios (DFS):")
+                                for v in resultado_dfs:
+                                    nome = grafo.get_nome_predio(v)
+                                    print(f"{v} ({nome})")
+                            else:
+                                print("Prédio de origem não existe.")
+                        except ValueError:
+                            print("Entrada inválida. Digite um número de prédio válido.")
+
+                    elif sub_opcao == "6":
+                        print("Retornando ao menu principal.")
+                        break
+
+                    else:
+                        print("Opção inválida. Tente novamente.")
+            else:
+                print("Grafo não carregado.")
+
+        elif opcao == "11":
             print("Encerrando o programa.")
             break
 
