@@ -129,25 +129,26 @@ def menu():
                     if not grafo.existe_vertice(origem) or not grafo.existe_vertice(destino):
                         print(f"Erro: Vértice de origem {origem} ou destino {destino} não existe.")
                     else:
-                        print(f"\nCalculando menor caminho de {origem} ({nome_origem}) para {destino} ({nome_destino})...")
                         caminho, distancia = grafo.dijkstra(origem, destino)
                         
                         if distancia == float('inf') or caminho is None or len(caminho) == 0:
                             print(f"Não existe caminho entre os vértices {origem} ({nome_origem}) e {destino} ({nome_destino}).")
                         else:
                             print(f"\nMenor caminho de {origem} ({nome_origem}) a {destino} ({nome_destino}):")
-                            print(f"Distância total: {distancia:.2f}")
+                            print(f"Distância total: {distancia:.2f} metros")
                             
-                            print("\nCaminho completo:")
-                            for i in range(len(caminho)):
+                            print("\nSequência de prédios a percorrer:")
+                            for i in range(len(caminho) - 1):
                                 v = caminho[i]
-                                nome = grafo.get_nome_predio(v)
-                                if i < len(caminho) - 1:
-                                    proxV = caminho[i+1]
-                                    peso = grafo.adj[v][proxV]
-                                    print(f"  {v:2} ({nome}) --[{peso:.2f}]--> ", end="")
-                                else:
-                                    print(f"{v:2} ({nome})")
+                                proxV = caminho[i+1]
+                                nome_v = grafo.get_nome_predio(v)
+                                nome_prox = grafo.get_nome_predio(proxV)
+                                peso = grafo.adj[v][proxV]
+                                print(f"{v} ({nome_v}) --> {proxV} ({nome_prox}) [{peso:.2f} metros]\n")
+                            # Exibe o último prédio do caminho
+                            ultimo = caminho[-1]
+                            nome_ultimo = grafo.get_nome_predio(ultimo)
+                            print(f"{ultimo} ({nome_ultimo})")
                 except ValueError:
                     print("Por favor, insira números válidos para os vértices.")
             else:
