@@ -7,7 +7,6 @@
 # Arquivo de funções: contém todas as funções necessárias para o funcionamento do projeto
 
 import sys
-from collections import deque
 
 class TGrafoND:
     def __init__(self, n, tipo_grafo):
