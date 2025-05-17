@@ -241,7 +241,7 @@ class TGrafoND:
         graus = {v: 0 for v in range(self.n)}
         for v in range(self.n):
             for w in range(self.n):
-                if self.adj[v][w] is not None:
+                if self.adj[v][w] > 0:
                     graus[v] += 1
         return graus
 
